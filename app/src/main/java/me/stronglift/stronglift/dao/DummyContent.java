@@ -1,14 +1,11 @@
-package me.stronglift.stronglift.fragments.dummy;
+package me.stronglift.stronglift.dao;
 
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
 import me.stronglift.stronglift.model.Lift;
-import me.stronglift.stronglift.model.LiftType;
-import me.stronglift.stronglift.model.User;
 
 /**
  * Helper class for providing sample content for user interfaces created by
@@ -30,10 +27,10 @@ public class DummyContent {
 
     static {
         // Add 3 sample items.
-        addItem(new Lift(LiftType.BENCH_PRESS, 10, 80, new Date(), new User()));
-        addItem(new Lift(LiftType.DEADLIFT, 8, 80, new Date(), new User()));
-        addItem(new Lift(LiftType.DEADLIFT, 6, 80, new Date(), new User()));
-        addItem(new Lift(LiftType.SQUAT, 7, 80, new Date(), new User()));
+//        addItem(new Lift(LiftType.BENCH_PRESS, 10, 80, new Date(), new User()));
+//        addItem(new Lift(LiftType.DEADLIFT, 8, 80, new Date(), new User()));
+//        addItem(new Lift(LiftType.DEADLIFT, 6, 80, new Date(), new User()));
+//        addItem(new Lift(LiftType.SQUAT, 7, 80, new Date(), new User()));
 //        addItem(new Lift(LiftType.BENCH_PRESS, 5, 80, new Date(), new User()));
 //        addItem(new Lift(LiftType.BENCH_PRESS, 10, 80, new Date(), new User()));
 //        addItem(new Lift(LiftType.DEADLIFT, 10, 9, new Date(), new User()));
