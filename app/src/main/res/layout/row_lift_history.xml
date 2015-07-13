@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/main"
+    android:layout_width="fill_parent"
+    android:layout_height="60dp"
+    android:layout_marginTop="20dp"
+    android:layout_marginStart="10dp"
+    android:layout_marginEnd="10dp"
+    >
+
+    <Spinner
+        android:id="@+id/liftSpinner"
+        android:layout_width="200dp"
+        android:layout_height="fill_parent"
+        android:spinnerMode="dropdown" />
+
+    <EditText
+        android:id="@+id/repsText"
+        android:layout_width="40dp"
+        android:layout_height="fill_parent"
+        android:layout_gravity="bottom"
+        android:layout_marginLeft="10dp"
+        android:layout_toRightOf="@id/liftSpinner"
+        android:text="10" />
+
+    <EditText
+        android:id="@+id/weightText"
+        android:layout_width="40dp"
+        android:layout_height="fill_parent"
+        android:layout_marginLeft="10dp"
+        android:text="100" />
+
+    <Button
+        android:id="@+id/removeButtonButton"
+        android:layout_width="35dp"
+        android:layout_height="35dp"
+        android:layout_marginLeft="10dp"
+        android:text="x"
+        android:layout_gravity="center_vertical"/>
+
+</LinearLayout>
+
