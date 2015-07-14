@@ -6,14 +6,22 @@ import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.AbsListView;
+import android.widget.AdapterView;
+import android.widget.ArrayAdapter;
 import android.widget.BaseAdapter;
 import android.widget.ListView;
+import android.widget.Spinner;
+
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
 
 import me.stronglift.stronglift.R;
 import me.stronglift.stronglift.adapters.LiftHistoryAdapter;
 import me.stronglift.stronglift.dao.DummyContent;
 import me.stronglift.stronglift.interfaces.OnFragmentInteractionListener;
+import me.stronglift.stronglift.model.Lift;
+import me.stronglift.stronglift.model.LiftType;
 
 /**
  * A fragment representing a list of Items.
@@ -48,6 +56,8 @@ public class LiftHistoryListFragment extends Fragment {
      */
     private BaseAdapter mAdapter;
 
+    private List<Lift> liftList;
+
     /**
      * Mandatory empty constructor for the fragment manager to instantiate the
      * fragment (e.g. upon screen orientation changes).
@@ -64,7 +74,8 @@ public class LiftHistoryListFragment extends Fragment {
             mParam2 = getArguments().getString(ARG_PARAM2);
         }
 
-        mAdapter = new LiftHistoryAdapter(getActivity(), DummyContent.ITEMS);
+        liftList = new ArrayList<>(DummyContent.ITEMS);
+        mAdapter = new LiftHistoryAdapter(getActivity(), liftList);
     }
 
     @Override
@@ -76,7 +87,47 @@ public class LiftHistoryListFragment extends Fragment {
         mListView = (ListView) view.findViewById(R.id.liftHistoryListView);
         mListView.setAdapter(mAdapter);
 
+        setupLiftSpinnerFilter((Spinner) view.findViewById(R.id.liftSpinner), liftList);
+
         return view;
+    }
+
+    private void setupLiftSpinnerFilter(final Spinner liftSpinner, final List<Lift> list) {
+
+            List<String> liftTypes = new ArrayList<>();
+            liftTypes.add(getString(R.string.filter_all));
+
+            for(LiftType liftType : Arrays.asList(LiftType.values())) {
+                liftTypes.add(liftType.toString());
+            }
+
+            ArrayAdapter<String> adapter = new ArrayAdapter<>(getActivity(), R.layout.spinner_item, liftTypes);
+            adapter.setDropDownViewResource(R.layout.spinner_item);
+        liftSpinner.setAdapter(adapter);
+
+            liftSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+                @Override
+                public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+                    list.clear();
+                    if(id == 0) {
+                        list.addAll(DummyContent.ITEMS);
+                    }
+                    else {
+                        for (Lift lift : DummyContent.ITEMS) {
+                            if (lift.getLiftType().getId() == id-1) {
+                                list.add(lift);
+                            }
+                        }
+                    }
+                    mAdapter.notifyDataSetChanged();
+                }
+
+                @Override
+                public void onNothingSelected(AdapterView<?> parent) {
+
+                }
+            });
+
     }
 
     @Override

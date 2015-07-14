@@ -11,9 +11,13 @@ import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.Spinner;
 import android.widget.TextView;
+import android.widget.Toast;
 
+import java.math.BigDecimal;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Date;
+import java.util.List;
 
 import me.stronglift.stronglift.R;
 import me.stronglift.stronglift.dao.DummyContent;
@@ -33,21 +37,37 @@ public class LiftInputActivity extends Activity implements OnFragmentInteraction
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_lift_input);
+
         Spinner liftSpinner = (Spinner) findViewById(R.id.liftSpinner);
-        ArrayAdapter<LiftType> adapter = new ArrayAdapter<LiftType>(this, android.R.layout.simple_spinner_item, Arrays.asList(LiftType.values()));
-        adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-        liftSpinner.setAdapter(adapter);
+        ArrayAdapter<LiftType> liftSpinnerAdapter = new ArrayAdapter<LiftType>(this, android.R.layout.simple_spinner_item, Arrays.asList(LiftType.values()));
+        liftSpinnerAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+        liftSpinner.setAdapter(liftSpinnerAdapter);
+
+        List<Integer> repsList = new ArrayList<>();
+        for (int i = 1; i <= 10; i++) {
+            repsList.add(i);
+        }
+
+        Spinner repsSpinner = (Spinner) findViewById(R.id.repsSpinner);
+        ArrayAdapter<Integer> repsSpinnerAdapter = new ArrayAdapter<>(this, android.R.layout.simple_spinner_item, repsList);
+        repsSpinnerAdapter.setDropDownViewResource(R.layout.spinner_item_small);
+        repsSpinner.setAdapter(repsSpinnerAdapter);
+
 
         Button addButton = (Button) findViewById(R.id.addButton);
 
         addButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Lift lift = getLift();
-                DummyContent.ITEMS.add(0, lift);
-                LiftInputListFragment liftinputListFragment = (LiftInputListFragment) getFragmentManager().findFragmentById(R.id.liftHistoryFragment);
-                liftinputListFragment.refreshData();
-                Log.d("#LiftInputActivity", "Added new lift: " + lift.toString());
+                try {
+                    Lift lift = getLift();
+                    DummyContent.ITEMS.add(0, lift);
+                    LiftInputListFragment liftinputListFragment = (LiftInputListFragment) getFragmentManager().findFragmentById(R.id.liftHistoryFragment);
+                    liftinputListFragment.refreshData();
+                    Log.d("#LiftInputActivity", "Added new lift: " + lift.toString());
+                } catch (NumberFormatException nfe) {
+                    Toast.makeText(LiftInputActivity.this, getString(R.string.invalid_rep_or_weight), Toast.LENGTH_SHORT).show();
+                }
             }
         });
     }
@@ -55,14 +75,14 @@ public class LiftInputActivity extends Activity implements OnFragmentInteraction
     private Lift getLift() {
         Lift lift = new Lift();
 
-        Spinner spinner = (Spinner) findViewById(R.id.liftSpinner);
-        lift.setLiftType((LiftType) spinner.getSelectedItem());
+        Spinner liftSpinner = (Spinner) findViewById(R.id.liftSpinner);
+        lift.setLiftType((LiftType) liftSpinner.getSelectedItem());
 
-        TextView repsText = (TextView) findViewById(R.id.repsText);
-        lift.setRepetition(Integer.valueOf(repsText.getText().toString()));
+        Spinner repsSpinner = (Spinner) findViewById(R.id.repsSpinner);
+        lift.setRepetition((int) repsSpinner.getSelectedItemId() + 1);
 
         TextView weightText = (TextView) findViewById(R.id.weightText);
-        lift.setWeight(Double.valueOf(weightText.getText().toString()));
+        lift.setWeight(new BigDecimal(weightText.getText().toString()));
 
         lift.setTime(new Date());
         lift.setOwner(new User());
@@ -93,18 +113,15 @@ public class LiftInputActivity extends Activity implements OnFragmentInteraction
             startActivity(new Intent(this, LiftInputActivity.class));
             finish();
             return true;
-        }
-        else if (id == R.id.menu_item_history) {
+        } else if (id == R.id.menu_item_history) {
             startActivity(new Intent(this, LiftHistoryActivity.class));
             finish();
             return true;
-        }
-        else if (id == R.id.menu_item_records) {
+        } else if (id == R.id.menu_item_records) {
             startActivity(new Intent(this, LiftRecordsActivity.class));
             finish();
             return true;
-        }
-        else if (id == R.id.menu_item_exit) {
+        } else if (id == R.id.menu_item_exit) {
             finish();
             return true;
         }

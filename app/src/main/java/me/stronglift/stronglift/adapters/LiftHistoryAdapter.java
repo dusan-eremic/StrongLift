@@ -54,6 +54,7 @@ public class LiftHistoryAdapter extends BaseAdapter {
         ((TextView) theView.findViewById(R.id.liftTextView)).setText(liftList.get(position).getLiftType().toString());
         ((TextView) theView.findViewById(R.id.repsTextView)).setText(String.valueOf(liftList.get(position).getRepetition()));
         ((TextView) theView.findViewById(R.id.weightTextView)).setText(String.valueOf(liftList.get(position).getWeight()));
+        ((TextView) theView.findViewById(R.id.oneRepMaxTextView)).setText(String.valueOf(liftList.get(position).calcOneRepMax()));
         SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy");
         String date = sdf.format(liftList.get(position).getTime());
         ((TextView) theView.findViewById(R.id.dateTextView)).setText(date);

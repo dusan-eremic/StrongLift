@@ -1,5 +1,6 @@
 package me.stronglift.stronglift.model;
 
+import java.math.BigDecimal;
 import java.util.Date;
 import java.util.UUID;
 
@@ -11,30 +12,12 @@ public class Lift {
     private String id;
     private LiftType liftType;
     private Integer repetition;
-    private Double weight;
+    private BigDecimal weight;
     private Date time;
     private User owner;
 
     public Lift() {
         id = UUID.randomUUID().toString().replace("-", "");
-    }
-
-    public Lift(LiftType liftType, Integer repetition, Double weight, Date time, User owner) {
-        this();
-        this.liftType = liftType;
-        this.repetition = repetition;
-        this.weight = weight;
-        this.time = time;
-        this.owner = owner;
-    }
-
-    public Lift(String id, LiftType liftType, Integer repetition, Double weight, Date time, User owner) {
-        this.id = id;
-        this.liftType = liftType;
-        this.repetition = repetition;
-        this.weight = weight;
-        this.time = time;
-        this.owner = owner;
     }
 
     public String getId() {
@@ -53,6 +36,18 @@ public class Lift {
         this.liftType = liftType;
     }
 
+    public void setLiftType(int liftTypeId) {
+
+        for(LiftType liftType : LiftType.values()) {
+            if(liftType.getId() == liftTypeId) {
+                this.liftType = liftType;
+                return;
+            }
+        }
+
+        throw new IllegalArgumentException("Unknown liftType id: " + liftTypeId);
+    }
+
     public Integer getRepetition() {
         return repetition;
     }
@@ -61,12 +56,12 @@ public class Lift {
         this.repetition = repetition;
     }
 
-    public Double getWeight() {
+    public BigDecimal getWeight() {
         return weight;
     }
 
-    public void setWeight(Double weight) {
-        this.weight = weight;
+    public void setWeight(BigDecimal weight) {
+        this.weight = weight.setScale(2, BigDecimal.ROUND_HALF_UP);
     }
 
     public Date getTime() {
@@ -83,6 +78,15 @@ public class Lift {
 
     public void setOwner(User owner) {
         this.owner = owner;
+    }
+
+    public BigDecimal calcOneRepMax() {
+        if(weight == null || !(weight.doubleValue() > 0) || repetition == null || !(repetition > 0) ) {
+            return new BigDecimal(0).setScale(2);
+        }
+        else {
+            return new BigDecimal(weight.doubleValue() / (1.0278 - (0.0278 * repetition))).setScale(2, BigDecimal.ROUND_HALF_UP);
+        }
     }
 
     @Override
