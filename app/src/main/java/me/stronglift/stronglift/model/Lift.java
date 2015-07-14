@@ -11,7 +11,7 @@ public class Lift {
     private String id;
     private LiftType liftType;
     private Integer repetition;
-    private Integer weight;
+    private Double weight;
     private Date time;
     private User owner;
 
@@ -19,7 +19,7 @@ public class Lift {
         id = UUID.randomUUID().toString().replace("-", "");
     }
 
-    public Lift(LiftType liftType, Integer repetition, Integer weight, Date time, User owner) {
+    public Lift(LiftType liftType, Integer repetition, Double weight, Date time, User owner) {
         this();
         this.liftType = liftType;
         this.repetition = repetition;
@@ -28,7 +28,7 @@ public class Lift {
         this.owner = owner;
     }
 
-    public Lift(String id, LiftType liftType, Integer repetition, Integer weight, Date time, User owner) {
+    public Lift(String id, LiftType liftType, Integer repetition, Double weight, Date time, User owner) {
         this.id = id;
         this.liftType = liftType;
         this.repetition = repetition;
@@ -61,11 +61,11 @@ public class Lift {
         this.repetition = repetition;
     }
 
-    public Integer getWeight() {
+    public Double getWeight() {
         return weight;
     }
 
-    public void setWeight(Integer weight) {
+    public void setWeight(Double weight) {
         this.weight = weight;
     }
 
@@ -83,6 +83,22 @@ public class Lift {
 
     public void setOwner(User owner) {
         this.owner = owner;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+
+        Lift lift = (Lift) o;
+
+        return id.equals(lift.id);
+
+    }
+
+    @Override
+    public int hashCode() {
+        return id.hashCode();
     }
 
     @Override

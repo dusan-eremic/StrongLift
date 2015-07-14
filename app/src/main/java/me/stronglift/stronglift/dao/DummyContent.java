@@ -1,11 +1,14 @@
 package me.stronglift.stronglift.dao;
 
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
 import me.stronglift.stronglift.model.Lift;
+import me.stronglift.stronglift.model.LiftType;
+import me.stronglift.stronglift.model.User;
 
 /**
  * Helper class for providing sample content for user interfaces created by

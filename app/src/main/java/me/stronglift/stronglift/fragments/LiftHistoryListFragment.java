@@ -8,6 +8,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AbsListView;
 import android.widget.BaseAdapter;
+import android.widget.ListView;
 
 import me.stronglift.stronglift.R;
 import me.stronglift.stronglift.adapters.LiftHistoryAdapter;
@@ -39,7 +40,7 @@ public class LiftHistoryListFragment extends Fragment {
     /**
      * The fragment's ListView/GridView.
      */
-    private AbsListView mListView;
+    private ListView mListView;
 
     /**
      * The Adapter which will be used to populate the ListView/GridView with
@@ -72,7 +73,7 @@ public class LiftHistoryListFragment extends Fragment {
         View view = inflater.inflate(R.layout.fragment_lifthistory, container, false);
 
         // Set the adapter
-        mListView = (AbsListView) view.findViewById(android.R.id.list);
+        mListView = (ListView) view.findViewById(R.id.liftHistoryListView);
         mListView.setAdapter(mAdapter);
 
         return view;

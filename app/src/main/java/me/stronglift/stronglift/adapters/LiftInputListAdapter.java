@@ -17,6 +17,7 @@ import java.util.Arrays;
 import java.util.List;
 
 import me.stronglift.stronglift.R;
+import me.stronglift.stronglift.interfaces.TextWatcherAdapter;
 import me.stronglift.stronglift.model.Lift;
 import me.stronglift.stronglift.model.LiftType;
 
@@ -38,6 +39,7 @@ public class LiftInputListAdapter extends BaseAdapter {
 
     @Override
     public int getCount() {
+        Log.d("#test", "count:" + liftList.size());
         return liftList.size();
     }
 
@@ -53,6 +55,7 @@ public class LiftInputListAdapter extends BaseAdapter {
 
     @Override
     public View getView(final int position, View convertView, ViewGroup parent) {
+        Log.d("#test", "getView position: " + position);
         View theView = convertView;
         if (theView == null)
             theView = inflater.inflate(R.layout.row_lift_input, null);
@@ -63,41 +66,51 @@ public class LiftInputListAdapter extends BaseAdapter {
         liftSpinner.setAdapter(adapter);
         liftSpinner.setSelection(liftList.get(position).getLiftType().getId());
 
-        final TextView repsText = (TextView) theView.findViewById(R.id.repsText);
-        repsText.setText(String.valueOf(liftList.get(position).getRepetition()));
-
-        final TextWatcher textWatcher = new TextWatcher() {
-            @Override
-            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
-
-            }
-
-            @Override
-            public void onTextChanged(CharSequence s, int start, int before, int count) {
-
-            }
-
-            @Override
-            public void afterTextChanged(Editable s) {
-                Log.d("#test", "position: " + position + " string: " + s.toString());
-                liftList.get(position).setRepetition(Integer.valueOf(s.toString()));
-            }
-        };
-
-        repsText.addTextChangedListener(textWatcher);
+        updateRepsTextView((TextView) theView.findViewById(R.id.repsText), liftList, position);
 
         ((TextView) theView.findViewById(R.id.weightText)).setText(String.valueOf(liftList.get(position).getWeight()));
 
-        Button removeButton = (Button) theView.findViewById(R.id.removeButton);
-        removeButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                repsText.removeTextChangedListener(textWatcher);
-                liftList.remove(position);
-                notifyDataSetChanged();
-            }
-        });
+
+        final Button removeButton = (Button) theView.findViewById(R.id.removeButton);
+        removeButton.setTag(R.integer.objectTag, liftList.get(position));
+
+        if (!removeButton.hasOnClickListeners()) {
+            removeButton.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    liftList.remove(removeButton.getTag(R.integer.objectTag));
+                    notifyDataSetChanged();
+                }
+            });
+        }
 
         return theView;
+    }
+
+    private void updateRepsTextView(final TextView repsText, List<Lift> list, int position) {
+
+        if (repsText.getTag(R.integer.objectTag) == null) {
+
+            new TextWatcherAdapter(repsText) {
+
+                @Override
+                public void afterTextChanged(Editable s) {
+                    if (s.length() > 0)
+                        ((Lift) this.getTextView().getTag(R.integer.objectTag)).setRepetition(Integer.valueOf(s.toString()));
+                }
+            };
+
+            repsText.setOnFocusChangeListener(new View.OnFocusChangeListener() {
+                @Override
+                public void onFocusChange(View v, boolean hasFocus) {
+                    if (!hasFocus && repsText.getText().length() == 0) {
+                        repsText.setText("0");
+                    }
+                }
+            });
+        }
+
+        repsText.setTag(R.integer.objectTag, list.get(position));
+        repsText.setText(String.valueOf(list.get(position).getRepetition()));
     }
 }

@@ -62,7 +62,7 @@ public class LiftInputActivity extends Activity implements OnFragmentInteraction
         lift.setRepetition(Integer.valueOf(repsText.getText().toString()));
 
         TextView weightText = (TextView) findViewById(R.id.weightText);
-        lift.setWeight(Integer.valueOf(weightText.getText().toString()));
+        lift.setWeight(Double.valueOf(weightText.getText().toString()));
 
         lift.setTime(new Date());
         lift.setOwner(new User());
