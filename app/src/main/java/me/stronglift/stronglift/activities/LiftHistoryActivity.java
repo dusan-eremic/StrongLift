@@ -7,12 +7,11 @@ import android.view.Menu;
 import android.view.MenuItem;
 
 import me.stronglift.stronglift.R;
-import me.stronglift.stronglift.interfaces.OnFragmentInteractionListener;
 
 /**
  * Created by Dusan Eremic.
  */
-public class LiftHistoryActivity extends Activity implements OnFragmentInteractionListener {
+public class LiftHistoryActivity extends Activity {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -60,10 +59,5 @@ public class LiftHistoryActivity extends Activity implements OnFragmentInteracti
         }
 
         return super.onOptionsItemSelected(item);
-    }
-
-    @Override
-    public void onFragmentInteraction(String id) {
-
     }
 }

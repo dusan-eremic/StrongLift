@@ -20,29 +20,61 @@ import java.util.Date;
 import java.util.List;
 
 import me.stronglift.stronglift.R;
-import me.stronglift.stronglift.dao.DummyContent;
 import me.stronglift.stronglift.fragments.LiftInputListFragment;
-import me.stronglift.stronglift.interfaces.OnFragmentInteractionListener;
 import me.stronglift.stronglift.model.Lift;
 import me.stronglift.stronglift.model.LiftType;
-import me.stronglift.stronglift.model.User;
+import me.stronglift.stronglift.rest.AuthManager;
+import me.stronglift.stronglift.rest.RestCallback;
+import me.stronglift.stronglift.rest.RestService;
+import retrofit.client.Response;
 
 
 /**
  * Created by Dusan Eremic.
  */
-public class LiftInputActivity extends Activity implements OnFragmentInteractionListener {
+public class LiftInputActivity extends Activity {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_lift_input);
+        setupLiftSpinner();
+        setupWeightSpinner();
+        setupAddButton();
+    }
 
+    private void setupAddButton() {
+        Button addButton = (Button) findViewById(R.id.addButton);
+
+        addButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+
+                try {
+                    final Lift lift = getLiftEntered();
+                    RestService.getLiftService().addLift(AuthManager.getUser(), lift, new RestCallback<Lift>(LiftInputActivity.this) {
+                        @Override
+                        public void success(Lift lift, Response response) {
+                            addLiftToList(lift);
+                            Log.d("#LiftInputActivity", "Lift added: " + lift.toString());
+                        }
+                    });
+                } catch (NumberFormatException nfe) {
+                    Toast.makeText(LiftInputActivity.this, getString(R.string.invalid_rep_or_weight), Toast.LENGTH_SHORT).show();
+                }
+            }
+        });
+    }
+
+
+    private void setupLiftSpinner() {
+        setContentView(R.layout.activity_lift_input);
         Spinner liftSpinner = (Spinner) findViewById(R.id.liftSpinner);
         ArrayAdapter<LiftType> liftSpinnerAdapter = new ArrayAdapter<LiftType>(this, android.R.layout.simple_spinner_item, Arrays.asList(LiftType.values()));
         liftSpinnerAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         liftSpinner.setAdapter(liftSpinnerAdapter);
+    }
 
+    private void setupWeightSpinner() {
         List<Integer> repsList = new ArrayList<>();
         for (int i = 1; i <= 10; i++) {
             repsList.add(i);
@@ -52,27 +84,9 @@ public class LiftInputActivity extends Activity implements OnFragmentInteraction
         ArrayAdapter<Integer> repsSpinnerAdapter = new ArrayAdapter<>(this, android.R.layout.simple_spinner_item, repsList);
         repsSpinnerAdapter.setDropDownViewResource(R.layout.spinner_item_small);
         repsSpinner.setAdapter(repsSpinnerAdapter);
-
-
-        Button addButton = (Button) findViewById(R.id.addButton);
-
-        addButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                try {
-                    Lift lift = getLift();
-                    DummyContent.ITEMS.add(0, lift);
-                    LiftInputListFragment liftinputListFragment = (LiftInputListFragment) getFragmentManager().findFragmentById(R.id.liftHistoryFragment);
-                    liftinputListFragment.refreshData();
-                    Log.d("#LiftInputActivity", "Added new lift: " + lift.toString());
-                } catch (NumberFormatException nfe) {
-                    Toast.makeText(LiftInputActivity.this, getString(R.string.invalid_rep_or_weight), Toast.LENGTH_SHORT).show();
-                }
-            }
-        });
     }
 
-    private Lift getLift() {
+    private Lift getLiftEntered() {
         Lift lift = new Lift();
 
         Spinner liftSpinner = (Spinner) findViewById(R.id.liftSpinner);
@@ -85,9 +99,14 @@ public class LiftInputActivity extends Activity implements OnFragmentInteraction
         lift.setWeight(new BigDecimal(weightText.getText().toString()));
 
         lift.setTime(new Date());
-        lift.setOwner(new User());
 
         return lift;
+    }
+
+    private void addLiftToList(Lift lift) {
+        ((LiftInputListFragment) getFragmentManager()//
+                .findFragmentById(R.id.liftHistoryFragment)) //
+                .addLift(lift);
     }
 
 
@@ -129,8 +148,4 @@ public class LiftInputActivity extends Activity implements OnFragmentInteraction
         return super.onOptionsItemSelected(item);
     }
 
-    @Override
-    public void onFragmentInteraction(String id) {
-        Log.wtf("#test", "onFragmentInteraction");
-    }
 }

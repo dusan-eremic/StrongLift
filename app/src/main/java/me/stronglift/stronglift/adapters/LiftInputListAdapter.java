@@ -1,7 +1,6 @@
 package me.stronglift.stronglift.adapters;
 
 import android.content.Context;
-import android.text.Editable;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -18,7 +17,7 @@ import java.util.Arrays;
 import java.util.List;
 
 import me.stronglift.stronglift.R;
-import me.stronglift.stronglift.interfaces.TextWatcherAdapter;
+import me.stronglift.stronglift.callbacks.LiftUpdatedCallback;
 import me.stronglift.stronglift.model.Lift;
 import me.stronglift.stronglift.model.LiftType;
 
@@ -30,10 +29,12 @@ public class LiftInputListAdapter extends BaseAdapter {
     private Context context;
     private List<Lift> liftList;
     private static LayoutInflater inflater = null;
+    private LiftUpdatedCallback liftUpdatedCallback;
 
-    public LiftInputListAdapter(Context context, List<Lift> liftList) {
+    public LiftInputListAdapter(Context context, List<Lift> liftList, LiftUpdatedCallback liftUpdatedCallback) {
         this.context = context;
         this.liftList = liftList;
+        this.liftUpdatedCallback = liftUpdatedCallback;
         inflater = (LayoutInflater) context
                 .getSystemService(Context.LAYOUT_INFLATER_SERVICE);
     }
@@ -73,20 +74,21 @@ public class LiftInputListAdapter extends BaseAdapter {
 
         if (weightText.getTag(R.integer.objectTag) == null) {
 
-            new TextWatcherAdapter(weightText) {
-
-                @Override
-                public void afterTextChanged(Editable s) {
-                    if (s.length() > 0)
-                        ((Lift) this.getTextView().getTag(R.integer.objectTag)).setWeight(new BigDecimal(s.toString()));
-                }
-            };
-
             weightText.setOnFocusChangeListener(new View.OnFocusChangeListener() {
                 @Override
                 public void onFocusChange(View v, boolean hasFocus) {
-                    if (!hasFocus && weightText.getText().length() == 0) {
-                        weightText.setText("0.00");
+                    if (!hasFocus) {
+                        Lift lift = (Lift) weightText.getTag(R.integer.objectTag);
+
+                        if (weightText.getText().length() == 0) {
+                            weightText.setText(lift.getWeight().toString());
+                        } else {
+                            BigDecimal newValue = new BigDecimal(weightText.getText().toString());
+                            if (!newValue.equals(lift.getWeight())) {
+                                lift.setWeight(newValue);
+                                liftUpdatedCallback.update(lift);
+                            }
+                        }
                     }
                 }
             });
@@ -101,7 +103,7 @@ public class LiftInputListAdapter extends BaseAdapter {
         if (repsSpinner.getTag(R.integer.objectTag) == null) {
 
             List<Integer> repsList = new ArrayList<>();
-            for(int i = 1; i <=10; i++) {
+            for (int i = 1; i <= 10; i++) {
                 repsList.add(i);
             }
             ArrayAdapter<Integer> adapter = new ArrayAdapter<>(context, android.R.layout.simple_spinner_item, repsList);
@@ -111,7 +113,12 @@ public class LiftInputListAdapter extends BaseAdapter {
             repsSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
                 @Override
                 public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
-                    ((Lift) repsSpinner.getTag(R.integer.objectTag)).setRepetition((int) id+1);
+                    Lift lift = (Lift) repsSpinner.getTag(R.integer.objectTag);
+                    int newValue = (int) id + 1;
+                    if (lift.getRepetition() != newValue) {
+                        lift.setRepetition(newValue);
+                        liftUpdatedCallback.update(lift);
+                    }
                 }
 
                 @Override
@@ -122,7 +129,7 @@ public class LiftInputListAdapter extends BaseAdapter {
         }
 
         repsSpinner.setTag(R.integer.objectTag, list.get(position));
-        repsSpinner.setSelection(liftList.get(position).getRepetition()-1);
+        repsSpinner.setSelection(liftList.get(position).getRepetition() - 1);
     }
 
     private void updateLiftSpinner(Context context, final Spinner liftSpinner, List<Lift> list, int position) {
@@ -136,7 +143,12 @@ public class LiftInputListAdapter extends BaseAdapter {
             liftSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
                 @Override
                 public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
-                    ((Lift) liftSpinner.getTag(R.integer.objectTag)).setLiftType((int) id);
+                    Lift lift = (Lift) liftSpinner.getTag(R.integer.objectTag);
+                    int newValue = (int) id;
+                    if (newValue != lift.getLiftType().getId()) {
+                        lift.setLiftType(newValue);
+                        liftUpdatedCallback.update(lift);
+                    }
                 }
 
                 @Override
@@ -158,7 +170,9 @@ public class LiftInputListAdapter extends BaseAdapter {
             removeButton.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    liftList.remove(removeButton.getTag(R.integer.objectTag));
+                    Lift lift = (Lift) removeButton.getTag(R.integer.objectTag);
+                    liftList.remove(lift);
+                    liftUpdatedCallback.remove(lift);
                     notifyDataSetChanged();
                 }
             });

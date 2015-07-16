@@ -1,49 +1,31 @@
 package me.stronglift.stronglift.fragments;
 
-import android.app.Activity;
-import android.app.Fragment;
 import android.app.ListFragment;
 import android.os.Bundle;
-import android.view.LayoutInflater;
+import android.util.Log;
 import android.view.View;
-import android.view.ViewGroup;
-import android.widget.AbsListView;
-import android.widget.AdapterView;
 import android.widget.BaseAdapter;
-import android.widget.ListAdapter;
 
-import me.stronglift.stronglift.R;
+import java.util.List;
+
 import me.stronglift.stronglift.adapters.LiftInputListAdapter;
-import me.stronglift.stronglift.dao.DummyContent;
-import me.stronglift.stronglift.interfaces.OnFragmentInteractionListener;
+import me.stronglift.stronglift.callbacks.LiftUpdatedCallback;
+import me.stronglift.stronglift.model.Lift;
+import me.stronglift.stronglift.rest.AuthManager;
+import me.stronglift.stronglift.rest.LiftCollection;
+import me.stronglift.stronglift.rest.RestCallback;
+import me.stronglift.stronglift.rest.RestService;
+import retrofit.client.Response;
 
-/**
- * A fragment representing a list of Items.
- * <p>
- * Large screen devices (such as tablets) are supported by replacing the ListView
- * with a GridView.
- * <p>
- * Activities containing this fragment MUST implement the {@link OnFragmentInteractionListener}
- * interface.
- */
 public class LiftInputListFragment extends ListFragment {
-
-    // TODO: Rename parameter arguments, choose names that match
-    // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
-    private static final String ARG_PARAM1 = "param1";
-    private static final String ARG_PARAM2 = "param2";
-
-    // TODO: Rename and change types of parameters
-    private String mParam1;
-    private String mParam2;
-
-    private OnFragmentInteractionListener mListener;
 
     /**
      * The Adapter which will be used to populate the ListView/GridView with
      * Views.
      */
     private BaseAdapter mAdapter;
+
+    private List<Lift> liftList;
 
     /**
      * Mandatory empty constructor for the fragment manager to instantiate the
@@ -53,44 +35,45 @@ public class LiftInputListFragment extends ListFragment {
     }
 
     @Override
-    public void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-
-        if (getArguments() != null) {
-            mParam1 = getArguments().getString(ARG_PARAM1);
-            mParam2 = getArguments().getString(ARG_PARAM2);
-        }
-
-        mAdapter = new LiftInputListAdapter(getActivity(), DummyContent.ITEMS);
-    }
-
-    @Override
     public void onViewCreated(View view, Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
 
-        // Set the adapter
-        setListAdapter(mAdapter);
+        RestService.getLiftService().getAllLifts(AuthManager.getUser(), new RestCallback<LiftCollection>(getActivity()) {
+            @Override
+            public void success(LiftCollection liftCollection, Response response) {
+                liftList = liftCollection.getItems();
+                mAdapter = new LiftInputListAdapter(getActivity(), liftList, getLiftUpdatedCallback());
+                setListAdapter(mAdapter);
+            }
+        });
     }
 
-    @Override
-    public void onAttach(Activity activity) {
-        super.onAttach(activity);
-        try {
-            mListener = (OnFragmentInteractionListener) activity;
-        } catch (ClassCastException e) {
-            throw new ClassCastException(activity.toString()
-                    + " must implement OnFragmentInteractionListener");
-        }
+    private LiftUpdatedCallback getLiftUpdatedCallback() {
+        return new LiftUpdatedCallback() {
+            @Override
+            public void update(Lift lift) {
+                RestService.getLiftService().updateLift(AuthManager.getUser(), lift.getId(), lift, new RestCallback<Lift>(getActivity()) {
+                    @Override
+                    public void success(Lift lift, Response response) {
+                        Log.d("#LiftUpdatedCallback", "Lift updated: " + lift);
+                    }
+                });
+            }
+
+            @Override
+            public void remove(final Lift lift) {
+                RestService.getLiftService().removeLift(AuthManager.getUser(), lift.getId(), new RestCallback<Void>(getActivity()) {
+                    @Override
+                    public void success(Void v, Response response) {
+                        Log.d("#LiftUpdatedCallback", "Lift deleted: " + lift);
+                    }
+                });
+            }
+        };
     }
 
-    @Override
-    public void onDetach() {
-        super.onDetach();
-        mListener = null;
-    }
-
-    public void refreshData() {
+    public void addLift(Lift lift) {
+        liftList.add(0, lift);
         mAdapter.notifyDataSetChanged();
     }
-
 }

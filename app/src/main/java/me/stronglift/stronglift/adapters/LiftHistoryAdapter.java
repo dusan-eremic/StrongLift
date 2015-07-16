@@ -18,6 +18,8 @@ import me.stronglift.stronglift.model.Lift;
  */
 public class LiftHistoryAdapter extends BaseAdapter {
 
+    private static final String DATE_FORMAT = "dd/MM/yyyy";
+    private static final SimpleDateFormat sdf = new SimpleDateFormat(DATE_FORMAT);
     private Context context;
     private List<Lift> liftList;
     private static LayoutInflater inflater = null;
@@ -55,7 +57,6 @@ public class LiftHistoryAdapter extends BaseAdapter {
         ((TextView) theView.findViewById(R.id.repsTextView)).setText(String.valueOf(liftList.get(position).getRepetition()));
         ((TextView) theView.findViewById(R.id.weightTextView)).setText(String.valueOf(liftList.get(position).getWeight()));
         ((TextView) theView.findViewById(R.id.oneRepMaxTextView)).setText(String.valueOf(liftList.get(position).calcOneRepMax()));
-        SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy");
         String date = sdf.format(liftList.get(position).getTime());
         ((TextView) theView.findViewById(R.id.dateTextView)).setText(date);
 

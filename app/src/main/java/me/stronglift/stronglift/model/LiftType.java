@@ -1,13 +1,11 @@
 package me.stronglift.stronglift.model;
 
-import me.stronglift.stronglift.R;
-
 /**
  * Created by Dusan Eremic.
  */
 public enum LiftType {
 
-    BENCH_PRESS(0, "Bench Press"), SQUAT(1, "Squat"), DEADLIFT(2, "Deadlift");
+    BENCH(0, "Bench Press"), SQUAT(1, "Squat"), DEADLIFT(2, "Deadlift");
 
     private int id;
     private String description;

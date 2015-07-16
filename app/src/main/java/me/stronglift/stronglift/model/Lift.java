@@ -14,7 +14,6 @@ public class Lift {
     private Integer repetition;
     private BigDecimal weight;
     private Date time;
-    private User owner;
 
     public Lift() {
         id = UUID.randomUUID().toString().replace("-", "");
@@ -38,8 +37,8 @@ public class Lift {
 
     public void setLiftType(int liftTypeId) {
 
-        for(LiftType liftType : LiftType.values()) {
-            if(liftType.getId() == liftTypeId) {
+        for (LiftType liftType : LiftType.values()) {
+            if (liftType.getId() == liftTypeId) {
                 this.liftType = liftType;
                 return;
             }
@@ -72,19 +71,10 @@ public class Lift {
         this.time = time;
     }
 
-    public User getOwner() {
-        return owner;
-    }
-
-    public void setOwner(User owner) {
-        this.owner = owner;
-    }
-
     public BigDecimal calcOneRepMax() {
-        if(weight == null || !(weight.doubleValue() > 0) || repetition == null || !(repetition > 0) ) {
+        if (weight == null || !(weight.doubleValue() > 0) || repetition == null || !(repetition > 0)) {
             return new BigDecimal(0).setScale(2);
-        }
-        else {
+        } else {
             return new BigDecimal(weight.doubleValue() / (1.0278 - (0.0278 * repetition))).setScale(2, BigDecimal.ROUND_HALF_UP);
         }
     }
@@ -111,8 +101,6 @@ public class Lift {
                 "liftType=" + liftType +
                 ", repetition=" + repetition +
                 ", weight=" + weight +
-                ", time=" + time +
-                ", owner=" + owner +
-                '}';
+                ", time=" + time + '}';
     }
 }
