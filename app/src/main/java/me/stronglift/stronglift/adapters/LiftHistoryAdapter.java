@@ -14,6 +14,8 @@ import me.stronglift.stronglift.R;
 import me.stronglift.stronglift.model.Lift;
 
 /**
+ *
+ *
  * Created by Dusan Eremic.
  */
 public class LiftHistoryAdapter extends BaseAdapter {

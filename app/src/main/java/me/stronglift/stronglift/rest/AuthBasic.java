@@ -2,8 +2,12 @@ package me.stronglift.stronglift.rest;
 
 import android.util.Base64;
 
+import me.stronglift.stronglift.model.User;
+
 /**
- * Created by dusan on 16/07/15.
+ *
+ *
+ * Created by Dusan Eremic.
  */
 class AuthBasic {
 
@@ -14,6 +18,11 @@ class AuthBasic {
     public AuthBasic(String username, String password) {
         this.username = username;
         this.password = password;
+    }
+
+    public AuthBasic(User user) {
+        this.username = user.getUsername();
+        this.password = user.getPassword();
     }
 
     @Override

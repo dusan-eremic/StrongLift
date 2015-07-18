@@ -1,11 +1,11 @@
-package me.stronglift.stronglift.rest;
+package me.stronglift.stronglift.model;
 
 import java.util.List;
 
-import me.stronglift.stronglift.model.Lift;
-
 /**
- * Created by dusan on 16/07/15.
+ *
+ *
+ * Created by Dusan Eremic.
  */
 public class LiftCollection {
 

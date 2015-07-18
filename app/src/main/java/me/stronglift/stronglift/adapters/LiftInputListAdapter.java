@@ -22,6 +22,8 @@ import me.stronglift.stronglift.model.Lift;
 import me.stronglift.stronglift.model.LiftType;
 
 /**
+ *
+ *
  * Created by Dusan Eremic.
  */
 public class LiftInputListAdapter extends BaseAdapter {

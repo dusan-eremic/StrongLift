@@ -5,6 +5,8 @@ import java.util.Date;
 import java.util.UUID;
 
 /**
+ *
+ *
  * Created by Dusan Eremic.
  */
 public class Lift {

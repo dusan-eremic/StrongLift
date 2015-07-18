@@ -3,6 +3,8 @@ package me.stronglift.stronglift.model;
 import java.util.UUID;
 
 /**
+ *
+ *
  * Created by Dusan Eremic.
  */
 public class User {

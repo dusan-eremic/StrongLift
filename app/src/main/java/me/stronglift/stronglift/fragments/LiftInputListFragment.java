@@ -12,11 +12,16 @@ import me.stronglift.stronglift.adapters.LiftInputListAdapter;
 import me.stronglift.stronglift.callbacks.LiftUpdatedCallback;
 import me.stronglift.stronglift.model.Lift;
 import me.stronglift.stronglift.rest.AuthManager;
-import me.stronglift.stronglift.rest.LiftCollection;
+import me.stronglift.stronglift.model.LiftCollection;
 import me.stronglift.stronglift.rest.RestCallback;
 import me.stronglift.stronglift.rest.RestService;
 import retrofit.client.Response;
 
+/**
+ *
+ *
+ * Created by Dusan Eremic.
+ */
 public class LiftInputListFragment extends ListFragment {
 
     /**
@@ -38,7 +43,7 @@ public class LiftInputListFragment extends ListFragment {
     public void onViewCreated(View view, Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
 
-        RestService.getLiftService().getAllLifts(AuthManager.getUser(), new RestCallback<LiftCollection>(getActivity()) {
+        RestService.getLiftService().getAllLifts(AuthManager.getUser(), new RestCallback<LiftCollection>(getActivity(), "#getAllLifts") {
             @Override
             public void success(LiftCollection liftCollection, Response response) {
                 liftList = liftCollection.getItems();
@@ -52,7 +57,7 @@ public class LiftInputListFragment extends ListFragment {
         return new LiftUpdatedCallback() {
             @Override
             public void update(Lift lift) {
-                RestService.getLiftService().updateLift(AuthManager.getUser(), lift.getId(), lift, new RestCallback<Lift>(getActivity()) {
+                RestService.getLiftService().updateLift(AuthManager.getUser(), lift.getId(), lift, new RestCallback<Lift>(getActivity(), "#updateLift") {
                     @Override
                     public void success(Lift lift, Response response) {
                         Log.d("#LiftUpdatedCallback", "Lift updated: " + lift);
@@ -62,7 +67,7 @@ public class LiftInputListFragment extends ListFragment {
 
             @Override
             public void remove(final Lift lift) {
-                RestService.getLiftService().removeLift(AuthManager.getUser(), lift.getId(), new RestCallback<Void>(getActivity()) {
+                RestService.getLiftService().removeLift(AuthManager.getUser(), lift.getId(), new RestCallback<Void>(getActivity(), "#removeLift") {
                     @Override
                     public void success(Void v, Response response) {
                         Log.d("#LiftUpdatedCallback", "Lift deleted: " + lift);

@@ -3,7 +3,9 @@ package me.stronglift.stronglift.callbacks;
 import me.stronglift.stronglift.model.Lift;
 
 /**
- * Created by dusan on 16/07/15.
+ *
+ *
+ * Created by Dusan Eremic.
  */
 public interface LiftUpdatedCallback {
 

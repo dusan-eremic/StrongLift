@@ -4,18 +4,23 @@ import android.content.Context;
 import android.util.Log;
 import android.widget.Toast;
 
+import me.stronglift.stronglift.model.RestError;
 import retrofit.Callback;
 import retrofit.RetrofitError;
 
 /**
- * Created by dusan on 16/07/15.
+ *
+ *
+ * Created by Dusan Eremic.
  */
 public abstract class RestCallback<T> implements Callback<T> {
 
     private Context context;
+    protected String tag;
 
-    public RestCallback(Context context) {
+    public RestCallback(Context context, String tag) {
         this.context = context;
+        this.tag = tag;
     }
 
     @Override
@@ -28,7 +33,7 @@ public abstract class RestCallback<T> implements Callback<T> {
             errorMessage = error.getMessage();
         }
 
-        Log.e("#RestCallback", errorMessage);
+        Log.e(tag+"#CB", errorMessage);
         Toast.makeText(context, errorMessage, Toast.LENGTH_SHORT).show();
     }
 }

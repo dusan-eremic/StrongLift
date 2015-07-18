@@ -5,6 +5,11 @@ import retrofit.Callback;
 import retrofit.http.Body;
 import retrofit.http.POST;
 
+/**
+ *
+ *
+ * Created by Dusan Eremic.
+ */
 public interface UserService {
 
     @POST("/users/")

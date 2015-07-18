@@ -1,6 +1,8 @@
 package me.stronglift.stronglift.model;
 
 /**
+ *
+ *
  * Created by Dusan Eremic.
  */
 public enum LiftType {

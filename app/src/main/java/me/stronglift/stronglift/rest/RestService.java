@@ -10,7 +10,9 @@ import retrofit.RestAdapter;
 import retrofit.converter.GsonConverter;
 
 /**
- * Created by dusan on 16/07/15.
+ *
+ *
+ * Created by Dusan Eremic.
  */
 public class RestService {
 

@@ -20,11 +20,16 @@ import me.stronglift.stronglift.adapters.LiftHistoryAdapter;
 import me.stronglift.stronglift.model.Lift;
 import me.stronglift.stronglift.model.LiftType;
 import me.stronglift.stronglift.rest.AuthManager;
-import me.stronglift.stronglift.rest.LiftCollection;
+import me.stronglift.stronglift.model.LiftCollection;
 import me.stronglift.stronglift.rest.RestCallback;
 import me.stronglift.stronglift.rest.RestService;
 import retrofit.client.Response;
 
+/**
+ *
+ *
+ * Created by Dusan Eremic.
+ */
 public class LiftHistoryListFragment extends Fragment {
 
     /**
@@ -44,14 +49,12 @@ public class LiftHistoryListFragment extends Fragment {
     }
 
     @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container,
-                             Bundle savedInstanceState) {
-        final View view = inflater.inflate(R.layout.fragment_lifthistory, container, false);
+    public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
+        final View view = inflater.inflate(R.layout.fragment_lift_history, container, false);
 
         mListView = (ListView) view.findViewById(R.id.liftHistoryListView);
 
-
-        RestService.getLiftService().getAllLifts(AuthManager.getUser(), new RestCallback<LiftCollection>(getActivity()) {
+        RestService.getLiftService().getAllLifts(AuthManager.getUser(), new RestCallback<LiftCollection>(getActivity(), "#getAllLifts") {
             @Override
             public void success(LiftCollection liftCollection, Response response) {
                 Log.d("#LiftHistoryList", "Loaded lifts: " + liftCollection.getItems().size());

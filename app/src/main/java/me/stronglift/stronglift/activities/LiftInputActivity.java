@@ -20,6 +20,7 @@ import java.util.Date;
 import java.util.List;
 
 import me.stronglift.stronglift.R;
+import me.stronglift.stronglift.callbacks.AuthManagerCallback;
 import me.stronglift.stronglift.fragments.LiftInputListFragment;
 import me.stronglift.stronglift.model.Lift;
 import me.stronglift.stronglift.model.LiftType;
@@ -28,52 +29,68 @@ import me.stronglift.stronglift.rest.RestCallback;
 import me.stronglift.stronglift.rest.RestService;
 import retrofit.client.Response;
 
-
 /**
+ * Activity koji omogućava unos novih liftova.
+ * <p/>
+ * Ovo je osnovni ekran aplikacije.
+ * <p/>
  * Created by Dusan Eremic.
  */
 public class LiftInputActivity extends Activity {
 
+    /**
+     * Nakon kreiranja Activity-ja, setovaćemo kontent da koristi
+     * layout koji je definisan u XML fajlu.
+     *
+     * @param savedInstanceState
+     */
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setupLiftSpinner();
-        setupWeightSpinner();
-        setupAddButton();
+        AuthManager.init(this, new AuthManagerCallback() {
+            @Override
+            public void authManagerInitialized() {
+                setContentView(R.layout.activity_lift_input);
+
+                // Podešavanje obe padajuće liste i polja za unos težine
+                setupLiftSpinner();
+                setupWeightSpinner();
+                setupAddButton();
+            }
+        });
     }
 
+    /**
+     * Metoda setuje click listener na Add dugme.
+     */
     private void setupAddButton() {
         Button addButton = (Button) findViewById(R.id.addButton);
 
         addButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-
                 try {
-                    final Lift lift = getLiftEntered();
-                    RestService.getLiftService().addLift(AuthManager.getUser(), lift, new RestCallback<Lift>(LiftInputActivity.this) {
-                        @Override
-                        public void success(Lift lift, Response response) {
-                            addLiftToList(lift);
-                            Log.d("#LiftInputActivity", "Lift added: " + lift.toString());
-                        }
-                    });
+                    addLiftToList();
                 } catch (NumberFormatException nfe) {
-                    Toast.makeText(LiftInputActivity.this, getString(R.string.invalid_rep_or_weight), Toast.LENGTH_SHORT).show();
+                    Toast.makeText(LiftInputActivity.this, getString(R.string.invalid_weight), Toast.LENGTH_SHORT).show();
                 }
             }
         });
     }
 
-
+    /**
+     * Metoda setuje listu u padajuću listu za izbor tipa lifta.
+     */
     private void setupLiftSpinner() {
-        setContentView(R.layout.activity_lift_input);
         Spinner liftSpinner = (Spinner) findViewById(R.id.liftSpinner);
         ArrayAdapter<LiftType> liftSpinnerAdapter = new ArrayAdapter<LiftType>(this, android.R.layout.simple_spinner_item, Arrays.asList(LiftType.values()));
         liftSpinnerAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         liftSpinner.setAdapter(liftSpinnerAdapter);
     }
 
+    /**
+     * Metoda setuje listu u padajuću listu za izbor težine.
+     */
     private void setupWeightSpinner() {
         List<Integer> repsList = new ArrayList<>();
         for (int i = 1; i <= 10; i++) {
@@ -86,6 +103,11 @@ public class LiftInputActivity extends Activity {
         repsSpinner.setAdapter(repsSpinnerAdapter);
     }
 
+    /**
+     * Metoda kreira Lift instancu na osnovu unetih podataka.
+     *
+     * @return Novi Lift.
+     */
     private Lift getLiftEntered() {
         Lift lift = new Lift();
 
@@ -103,13 +125,33 @@ public class LiftInputActivity extends Activity {
         return lift;
     }
 
-    private void addLiftToList(Lift lift) {
-        ((LiftInputListFragment) getFragmentManager()//
-                .findFragmentById(R.id.liftHistoryFragment)) //
-                .addLift(lift);
+    /**
+     * Metoda poziva REST service addList i ako je poziv bio uspešan dodaje
+     * novi Lift u listu prikazanu u fragmentu liftListFragment
+     * LiftInputList fragmentu
+     */
+    private void addLiftToList() {
+        final Lift lift = getLiftEntered();
+        RestService.
+                getLiftService().
+                addLift(AuthManager.getUser(), lift, new RestCallback<Lift>(LiftInputActivity.this, "#addLift") {
+                    @Override
+                    public void success(Lift lift, Response response) {
+                        ((LiftInputListFragment) getFragmentManager()//
+                                .findFragmentById(R.id.liftInputListFragment)) //
+                                .addLift(lift);
+                        Log.d("#LiftInputActivity", "Lift added: " + lift.toString());
+                    }
+                });
     }
 
-
+    /**
+     * Nakon kreiranje menija, setovaćemo sadržaj meni a da koristi
+     * stavke koje su definisane u XML fajlu.
+     *
+     * @param menu
+     * @return
+     */
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         // Inflate the menu; this adds items to the action bar if it is present.
@@ -118,10 +160,10 @@ public class LiftInputActivity extends Activity {
     }
 
     /**
-     * Metoda poziva odgovarajuci Activity nakon nakon selekcije u meniju.
+     * Metoda poziva odgovarajući Activity nakon nakon selekcije akcije na ActionBar-u.
      *
-     * @param item Selektovana stavka u meniju.
-     * @return true ako je selekcija obradjena, false ako nije
+     * @param item Selektovana stavka u meniju ili akcija na ActionBar-u.
+     * @return true ako je selekcija obrađena, false ako nije
      */
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {

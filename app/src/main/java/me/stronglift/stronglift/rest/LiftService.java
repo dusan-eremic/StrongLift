@@ -1,6 +1,7 @@
 package me.stronglift.stronglift.rest;
 
 import me.stronglift.stronglift.model.Lift;
+import me.stronglift.stronglift.model.LiftCollection;
 import retrofit.Callback;
 import retrofit.http.Body;
 import retrofit.http.DELETE;
@@ -10,12 +11,15 @@ import retrofit.http.POST;
 import retrofit.http.Path;
 
 /**
- * Created by dusan on 16/07/15.
+ *
+ *
+ * Created by Dusan Eremic.
  */
 public interface LiftService {
 
     String AUTHORIZATION = "Authorization";
     String LIFTS_PATH = "/lifts/";
+    String RECORDS = "records";
 
     @POST(LIFTS_PATH)
     void addLift(@Header(AUTHORIZATION) AuthBasic auth, @Body Lift lift, Callback<Lift> callback);
@@ -28,4 +32,7 @@ public interface LiftService {
 
     @GET(LIFTS_PATH)
     void getAllLifts(@Header(AUTHORIZATION) AuthBasic auth, Callback<LiftCollection> callback);
+
+    @GET(LIFTS_PATH + RECORDS)
+    void getRecords(@Header(AUTHORIZATION) AuthBasic auth, Callback<LiftCollection> callback);
 }

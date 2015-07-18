@@ -97,7 +97,7 @@
         android:text="Add" />
 
     <fragment
-        android:id="@+id/liftHistoryFragment"
+        android:id="@+id/liftInputListFragment"
         android:name="me.stronglift.stronglift.fragments.LiftInputListFragment"
         android:layout_width="fill_parent"
         android:layout_height="0dp"

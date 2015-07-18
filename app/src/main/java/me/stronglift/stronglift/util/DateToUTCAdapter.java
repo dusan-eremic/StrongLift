@@ -17,7 +17,9 @@ import java.util.Date;
 import java.util.TimeZone;
 
 /**
- * Created by dusan on 16/07/15.
+ *
+ *
+ * Created by Dusan Eremic.
  */
 public class DateToUTCAdapter implements JsonSerializer<Date>, JsonDeserializer<Date> {
     public static final String UTC_TIME_FORMAT = "yyyy-MM-dd'T'HH:mm:ss.SSS'Z'";
