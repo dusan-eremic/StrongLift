@@ -5,14 +5,22 @@ import android.util.Base64;
 import me.stronglift.stronglift.model.User;
 
 /**
- *
- *
+ * Pomoćna klasa za generisanje AuthBasic autorizacije.
+ * <p>
  * Created by Dusan Eremic.
  */
 class AuthBasic {
 
     public static final String BASIC = "Basic ";
+
+    /**
+     * Korisničko ime
+     */
     private String username;
+
+    /**
+     * Lozinka
+     */
     private String password;
 
     public AuthBasic(String username, String password) {
@@ -20,11 +28,21 @@ class AuthBasic {
         this.password = password;
     }
 
+    /**
+     * Konstruktor sa parametrima
+     *
+     * @param user Korisnik
+     */
     public AuthBasic(User user) {
         this.username = user.getUsername();
         this.password = user.getPassword();
     }
 
+    /**
+     * Metoda vraća username i password kao base64 enkodirani string.
+     *
+     * @return
+     */
     @Override
     public String toString() {
 

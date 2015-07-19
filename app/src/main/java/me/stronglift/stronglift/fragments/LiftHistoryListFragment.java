@@ -22,39 +22,50 @@ import me.stronglift.stronglift.model.LiftType;
 import me.stronglift.stronglift.rest.AuthManager;
 import me.stronglift.stronglift.model.LiftCollection;
 import me.stronglift.stronglift.rest.RestCallback;
-import me.stronglift.stronglift.rest.RestService;
+import me.stronglift.stronglift.rest.RestServiceFactory;
 import retrofit.client.Response;
 
 /**
- *
- *
+ * Fragment koji prikazuje listu istorije liftova.
+ * <p>
  * Created by Dusan Eremic.
  */
 public class LiftHistoryListFragment extends Fragment {
 
     /**
-     * The fragment's ListView/GridView.
+     * Instanca UI komponente koja prikazuje listu.
      */
     private ListView mListView;
 
+    /**
+     * Lista svih liftova koji se prikazuju u listi.
+     */
     private List<Lift> liftList;
 
+    /**
+     * Lista filtriranih liftova. Popunjava se ako korisnik izabere
+     * filter po tipu vežbe.
+     */
     private List<Lift> liftListFiltered = new ArrayList<>();
 
     /**
-     * Mandatory empty constructor for the fragment manager to instantiate the
-     * fragment (e.g. upon screen orientation changes).
+     * Obavezni konstruktor bez parametara
      */
     public LiftHistoryListFragment() {
     }
 
+    /**
+     * Metoda se poziva kada se kreira view (korisnički interfejs) ovog fragmenta.
+     * <p>
+     * Poziva se REST servis koji učitava podatke sa servera.
+     */
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         final View view = inflater.inflate(R.layout.fragment_lift_history, container, false);
 
         mListView = (ListView) view.findViewById(R.id.liftHistoryListView);
 
-        RestService.getLiftService().getAllLifts(AuthManager.getUser(), new RestCallback<LiftCollection>(getActivity(), "#getAllLifts") {
+        RestServiceFactory.getLiftService().getAllLifts(AuthManager.getUser(), new RestCallback<LiftCollection>(getActivity(), "#getAllLifts") {
             @Override
             public void success(LiftCollection liftCollection, Response response) {
                 Log.d("#LiftHistoryList", "Loaded lifts: " + liftCollection.getItems().size());
@@ -66,6 +77,11 @@ public class LiftHistoryListFragment extends Fragment {
         return view;
     }
 
+    /**
+     * Podešava padajuću listu koja će biti korišćena kao filter po tipu vežbe.
+     *
+     * @param liftSpinner Instanca UI komponente.
+     */
     private void setupLiftSpinnerFilter(final Spinner liftSpinner) {
 
         List<String> liftTypes = new ArrayList<>();
@@ -103,6 +119,11 @@ public class LiftHistoryListFragment extends Fragment {
 
     }
 
+    /**
+     * Setuje novu (filtriranu) listu za prikaz.
+     *
+     * @param liftList Nova lista koja se setuje nakon premene filtera.
+     */
     private void setList(List<Lift> liftList) {
         mListView.setAdapter(new LiftHistoryAdapter(getActivity(), liftList));
     }

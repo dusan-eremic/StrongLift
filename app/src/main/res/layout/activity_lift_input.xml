@@ -14,11 +14,11 @@
 
         <TextView
             android:id="@+id/liftLabel"
-            android:layout_marginLeft="20dp"
+            android:layout_marginStart="20dp"
             android:layout_width="0dp"
             android:layout_weight="4.5"
             android:layout_height="wrap_content"
-            android:text="Lift"
+            android:text="@string/liftLabel"
             android:textColor="#000000"
             android:textSize="18sp"
             android:textStyle="normal" />
@@ -28,8 +28,8 @@
             android:layout_width="0dp"
             android:layout_weight="1.3"
             android:layout_height="wrap_content"
-            android:text="Rep"
-            android:gravity="left"
+            android:text="@string/repLabel"
+            android:gravity="start"
             android:textColor="#000000"
             android:textSize="18sp"
             android:textStyle="normal" />
@@ -39,7 +39,7 @@
             android:layout_width="0dp"
             android:layout_weight="2"
             android:layout_height="wrap_content"
-            android:text="Weight"
+            android:text="@string/weightLabel"
             android:textColor="#000000"
             android:textSize="18sp"
             android:textStyle="normal" />
@@ -82,8 +82,7 @@
         <TextView
             android:layout_width="0dp"
             android:layout_weight="1"
-            android:layout_height="0dp"
-            android:layout_alignLeft="@+id/weightText"/>
+            android:layout_height="0dp"/>
 
     </LinearLayout>
 
@@ -92,9 +91,9 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="10dp"
-        android:layout_marginRight="10dp"
+        android:layout_marginStart="10dp"
         android:layout_gravity="bottom|end"
-        android:text="Add" />
+        android:text="@string/addButtonLabel" />
 
     <fragment
         android:id="@+id/liftInputListFragment"

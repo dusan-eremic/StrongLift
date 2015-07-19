@@ -26,7 +26,7 @@ import me.stronglift.stronglift.model.Lift;
 import me.stronglift.stronglift.model.LiftType;
 import me.stronglift.stronglift.rest.AuthManager;
 import me.stronglift.stronglift.rest.RestCallback;
-import me.stronglift.stronglift.rest.RestService;
+import me.stronglift.stronglift.rest.RestServiceFactory;
 import retrofit.client.Response;
 
 /**
@@ -132,7 +132,7 @@ public class LiftInputActivity extends Activity {
      */
     private void addLiftToList() {
         final Lift lift = getLiftEntered();
-        RestService.
+        RestServiceFactory.
                 getLiftService().
                 addLift(AuthManager.getUser(), lift, new RestCallback<Lift>(LiftInputActivity.this, "#addLift") {
                     @Override

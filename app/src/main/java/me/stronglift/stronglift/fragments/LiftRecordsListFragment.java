@@ -13,30 +13,34 @@ import me.stronglift.stronglift.adapters.LiftHistoryAdapter;
 import me.stronglift.stronglift.rest.AuthManager;
 import me.stronglift.stronglift.model.LiftCollection;
 import me.stronglift.stronglift.rest.RestCallback;
-import me.stronglift.stronglift.rest.RestService;
+import me.stronglift.stronglift.rest.RestServiceFactory;
 import retrofit.client.Response;
 
 /**
- *
- *
+ * Fragment koji prikazuje listu rekorda.
+ * <p>
  * Created by Dusan Eremic.
  */
 public class LiftRecordsListFragment extends Fragment {
 
     /**
-     * Mandatory empty constructor for the fragment manager to instantiate the
-     * fragment (e.g. upon screen orientation changes).
+     * Obavezni konstruktor bez parametara
      */
     public LiftRecordsListFragment() {
     }
 
+    /**
+     * Metoda se poziva kada se kreira view (korisnički interfejs) ovog fragmenta.
+     * <p>
+     * Poziva se REST servis koji učitava podatke sa servera.
+     */
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         final View view = inflater.inflate(R.layout.fragment_lift_records, container, false);
 
         final ListView mListView = (ListView) view.findViewById(R.id.liftRecordsListView);
 
-        RestService.getLiftService().getRecords(AuthManager.getUser(), new RestCallback<LiftCollection>(getActivity(), "#getRecords") {
+        RestServiceFactory.getLiftService().getRecords(AuthManager.getUser(), new RestCallback<LiftCollection>(getActivity(), "#getRecords") {
             @Override
             public void success(LiftCollection liftCollection, Response response) {
                 Log.d("#LiftRecordsList", "Loaded records: " + liftCollection.getItems().size());

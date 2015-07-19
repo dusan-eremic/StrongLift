@@ -22,40 +22,86 @@ import me.stronglift.stronglift.model.Lift;
 import me.stronglift.stronglift.model.LiftType;
 
 /**
- *
- *
+ * Adapter za prikaz liste za editovanje liftova. U metodi getView
+ * je definisano kako se svaki red u tabeli popunjava podacima.
+ * <p>
  * Created by Dusan Eremic.
  */
 public class LiftInputListAdapter extends BaseAdapter {
 
-    private Context context;
-    private List<Lift> liftList;
+    /**
+     * Instanca layout inflatera
+     */
     private static LayoutInflater inflater = null;
+    /**
+     * Application context
+     */
+    private Context context;
+    /**
+     * Lista liftova koji će biti prikazani
+     */
+    private List<Lift> liftList;
+    /**
+     * Callback koji će biti pozvan svaki put kada korisnik izvrši
+     * izemnu lifta prikazanog u listi.
+     */
     private LiftUpdatedCallback liftUpdatedCallback;
 
+    /**
+     * Konstruktor
+     *
+     * @param context             Application context
+     * @param liftList            Lista liftova koji će biti prikazani
+     * @param liftUpdatedCallback Callback koji će biti pozvan svaki put kada korisnik izvrši
+     *                            izemnu lifta prikazanog u listi.
+     */
     public LiftInputListAdapter(Context context, List<Lift> liftList, LiftUpdatedCallback liftUpdatedCallback) {
         this.context = context;
         this.liftList = liftList;
         this.liftUpdatedCallback = liftUpdatedCallback;
-        inflater = (LayoutInflater) context
-                .getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+        inflater = (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
     }
 
+    /**
+     * Vraca broj liftova u listu
+     *
+     * @return
+     */
     @Override
     public int getCount() {
         return liftList.size();
     }
 
+    /**
+     * Vraca jedan lift iz liste
+     *
+     * @param position Pozicija lifta u listi koji ce biti vracen.
+     * @return Lift prikazan u listi na zadatoj poziciji.
+     */
     @Override
     public Object getItem(int position) {
         return liftList.get(position);
     }
 
+    /**
+     * Vraca ID lifta na zadatoj poziciji.
+     *
+     * @param position Pozicija u listi.
+     * @return ID lifta na zadatoj poziciji.
+     */
     @Override
     public long getItemId(int position) {
         return liftList.get(position).getId().hashCode();
     }
 
+    /**
+     * Vraca jedan red u listi na određenoj pozicji.
+     *
+     * @param position    Pozicija lifta u listi.
+     * @param convertView View je XML definicija reda u tabeli.
+     * @param parent
+     * @return Red koji prikazuje lift na zadatoj poziciji u listi sa svim popunjenim podacima.
+     */
     @Override
     public View getView(final int position, View convertView, ViewGroup parent) {
 
@@ -72,6 +118,14 @@ public class LiftInputListAdapter extends BaseAdapter {
         return theView;
     }
 
+    /**
+     * Podešava text view koji se koristi za editovanje težine lifta.
+     *
+     * @param weightText Instanca UI kontrole.
+     * @param list       Lista svih liftova u listi.
+     * @param position   Pozicija lifta u listi koji prosleđena text view
+     *                   kontrola treba da edituje.
+     */
     private void updateWeightTextView(final TextView weightText, List<Lift> list, int position) {
 
         if (weightText.getTag(R.integer.objectTag) == null) {
@@ -100,6 +154,14 @@ public class LiftInputListAdapter extends BaseAdapter {
         weightText.setText(list.get(position).getWeight().toString());
     }
 
+    /**
+     * Podešava padajuću listu koja će biti korišćena za editovanje broj ponavljanja.
+     *
+     * @param context     Aplikacioni kontekst.
+     * @param repsSpinner Instanca padajuće liste.
+     * @param list        Lista liftova koji su prikazani na ekranu.
+     * @param position    Pozicija lifta u prosleđenoj listi koji ova kontrola treba da edituje.
+     */
     private void updateRepsSpinner(Context context, final Spinner repsSpinner, List<Lift> list, int position) {
 
         if (repsSpinner.getTag(R.integer.objectTag) == null) {
@@ -134,6 +196,14 @@ public class LiftInputListAdapter extends BaseAdapter {
         repsSpinner.setSelection(liftList.get(position).getRepetition() - 1);
     }
 
+    /**
+     * Podešava padajuću listu koja će biti korišćena za editovanje tipa lifta.
+     *
+     * @param context     Aplikacioni kontekst.
+     * @param liftSpinner Instanca padajuće liste.
+     * @param list        Lista liftova koji su prikazani na ekranu.
+     * @param position    Pozicija lifta u prosleđenoj listi koji ova kontrola treba da edituje.
+     */
     private void updateLiftSpinner(Context context, final Spinner liftSpinner, List<Lift> list, int position) {
 
         if (liftSpinner.getTag(R.integer.objectTag) == null) {
@@ -164,6 +234,13 @@ public class LiftInputListAdapter extends BaseAdapter {
         liftSpinner.setSelection(liftList.get(position).getLiftType().getId());
     }
 
+    /**
+     * Podešava dugme za brisanje lifta iz liste.
+     *
+     * @param removeButton Instanca dugmenta.
+     * @param liftList     Lista liftova koji su prikazani u listi.
+     * @param position     Pozicija lifta koji ovo dugme briše iz liste.
+     */
     private void updateRemoveButton(final ImageButton removeButton, final List<Lift> liftList, int position) {
 
         removeButton.setTag(R.integer.objectTag, liftList.get(position));

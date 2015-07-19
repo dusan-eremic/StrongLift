@@ -9,20 +9,39 @@ import retrofit.Callback;
 import retrofit.RetrofitError;
 
 /**
- *
- *
+ * Implementacija failure metode iz Callback interfejsa. Ova
+ * implementacija će pokušati da dobijenu grešku konvertuje u
+ * RestError model.
+ * <p>
  * Created by Dusan Eremic.
  */
 public abstract class RestCallback<T> implements Callback<T> {
 
-    private Context context;
+    /**
+     * Tag koji će se koristiti za logovanje
+     */
     protected String tag;
 
+    /**
+     * Aplikacioni kontekst
+     */
+    private Context context;
+
+    /**
+     * Konstruktor
+     *
+     * @param context Aplikacioni kontekst
+     * @param tag     Tag koji će se koristiti za logovanje
+     */
     public RestCallback(Context context, String tag) {
         this.context = context;
         this.tag = tag;
     }
 
+    /**
+     * Metoda će biti pozvana u slučaju bilo kakve greške u
+     * komunikaciji sa REST serverom.
+     */
     @Override
     public void failure(RetrofitError error) {
         String errorMessage;
@@ -33,7 +52,7 @@ public abstract class RestCallback<T> implements Callback<T> {
             errorMessage = error.getMessage();
         }
 
-        Log.e(tag+"#CB", errorMessage);
-        Toast.makeText(context, errorMessage, Toast.LENGTH_SHORT).show();
+        Log.e(tag + "#CB", errorMessage);
+        Toast.makeText(context, errorMessage, Toast.LENGTH_LONG).show();
     }
 }
